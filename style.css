@@ -1,0 +1,46 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+}
+
+canvas {
+  display: block;
+}
+
+.control-panel {
+  background: rgb(165, 165, 165, 0.8);
+  color: black;
+  opacity: 0.85;
+  border-radius: 5px;
+  border: none;
+  display: block;
+  font-family: sans-serif;
+  font-size: 13px;
+  height: auto;
+  padding: 2px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 150px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.control-panel summary {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.control-panel label {
+  display: block;
+  font-weight: bold;
+}
+.control-panel input[type="range"] {
+  width: 110px;
+}
+.control-panel a {
+  color: inherit;
+}
