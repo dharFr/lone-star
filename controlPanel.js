@@ -18,27 +18,21 @@ const controlPanel = {
   },
 
   createInputRange: function _createInputRange(key, parameter) {
-    const label = document.createElement("label");
-    label.setAttribute("for", `${key}Range`);
+    const markup = `<label for="${key}Range">
+      ${key}<br>
+      <input type="range" 
+        min="${parameter.min}" 
+        max="${parameter.max}" 
+        step="${parameter.step}" 
+        value="${parameter.value}"
+        name="${key}Range"/>
+      <output name="${key}">${parameter.value}</output>
+    </label>
+    <hr>`;
+    this.rootNode.insertAdjacentHTML("beforeend", markup);
 
-    const text = document.createTextNode(key);
-
-    const inputRange = document.createElement("input");
-    inputRange.type = "range";
-    inputRange.min = parameter.min;
-    inputRange.max = parameter.max;
-    inputRange.step = parameter.step;
-    inputRange.value = parameter.value;
-    inputRange.name = `${key}Range`;
-
-    const output = document.createElement("output");
-    output.name = key;
-    output.textContent = parameter.value;
-
-    label.appendChild(text);
-    label.appendChild(document.createElement("br"));
-    label.appendChild(inputRange);
-    label.appendChild(output);
+    const inputRange = this.rootNode.querySelector(`input[name=${key}Range]`);
+    const output = this.rootNode.querySelector(`output[name=${key}]`);
 
     // Listen to changes
     inputRange.addEventListener("input", (e) => {
@@ -46,86 +40,63 @@ const controlPanel = {
       output.textContent = inputRange.value;
       this.onChange(key, parameter);
     });
-
-    this.rootNode.appendChild(label);
-    this.rootNode.appendChild(document.createElement("hr"));
   },
 
   createSelect: function (key, parameter) {
-    const label = document.createElement("label");
-    label.setAttribute("for", `${key}Select`);
+    const markup = `<label for="${key}Select">
+      ${key}<br>
+      <select name="${key}Select">
+        ${parameter.options.map((opt, i) => 
+          `<option value="${opt}" ${parameter.value === i ? "selected" : ""}>${opt}</option>`
+        )}
+      </select>
+    </label>
+    <hr>`;
+    this.rootNode.insertAdjacentHTML("beforeend", markup);
 
-    const text = document.createTextNode(key);
-
-    const select = document.createElement("select");
-    select.name = `${key}Select`;
-
-    parameter.options.forEach((opt, i) => {
-      const option = document.createElement("option");
-      option.value = opt;
-      option.text = opt;
-      option.selected = parameter.value === i;
-      select.appendChild(option);
-    });
-
-    label.appendChild(text);
-    label.appendChild(select);
+    const select = this.rootNode.querySelector(`select[name=${key}Select]`);
 
     // Listen to changes
     select.addEventListener("change", (e) => {
       parameter.value = select.selectedIndex;
       this.onChange(key, parameter);
     });
-
-    this.rootNode.appendChild(label);
-    this.rootNode.appendChild(document.createElement("hr"));
   },
 
   createInputColor: function (key, parameter) {
-    const label = document.createElement("label");
-    label.setAttribute("for", `${key}Select`);
+    const markup = `<label for="${key}Select">
+      ${key}
+      <input type="color" name="${key}Color" value="${parameter.value}">
+    </label>
+    <hr>`;
+    this.rootNode.insertAdjacentHTML("beforeend", markup);
 
-    const text = document.createTextNode(key);
-
-    const inputColor = document.createElement("input");
-    inputColor.type = "color";
-    inputColor.value = parameter.value;
-    inputColor.name = `${key}Range`;
-
-    label.appendChild(text);
-    label.appendChild(inputColor);
+    const inputColor = this.rootNode.querySelector(`input[name=${key}Color]`);
 
     inputColor.addEventListener("change", (e) => {
       parameter.value = inputColor.value;
       this.onChange(key, parameter);
     });
-
-    this.rootNode.appendChild(label);
-    this.rootNode.appendChild(document.createElement("hr"));
   },
 
   createShareLink: function () {
-    const label = document.createElement("label");
-    const text = document.createTextNode("Copy link: ");
+    const markup = `<label>
+      Copy link: <br>
+      <a name="copy-link" title="Copy link" href="#">${this.serialize()}</a>
+    </label>
+    <hr>`;
+    this.rootNode.insertAdjacentHTML("beforeend", markup);
 
-    const a = document.createElement("a");
-    a.href = "#";
-    a.textContent = this.serialize();
-    label.appendChild(text);
-    label.appendChild(document.createElement("br"));
-    label.appendChild(a);
+    const a = this.rootNode.querySelector(`a[name="copy-link"]`);
 
     a.addEventListener("click", (e) => {
       navigator.clipboard.writeText(a.href).then(
         () => {
-          label.appendChild(document.createTextNode(" (copied ✓)"));
+          a.insertAdjacentHTML("afterend", " (copied ✓)");
         },
         (err) => console.error("copy link failed.", err)
       );
     });
-
-    this.rootNode.appendChild(label);
-    this.rootNode.appendChild(document.createElement("hr"));
 
     return a;
   },
@@ -185,21 +156,14 @@ const controlPanel = {
 };
 
 p5.prototype.createControlPanel = function (parameters, onChange) {
-  // <aside id='controlPanel' class="control-panel">
-  //   <details>
-  //     <summary>Parameters</summary>
-  //   </details>
-  // </aside>
-  const aside = document.createElement("aside");
-  aside.classList.add("control-panel");
-
-  const details = document.createElement("details");
-  details.open = true;
-  const summary = document.createElement("summary");
-  summary.textContent = "Parameters";
-  details.appendChild(summary);
-  aside.appendChild(details);
-  document.body.appendChild(aside);
+  const markup = `<aside id='controlPanel' class="control-panel">
+    <details open>
+      <summary>Parameters</summary>
+    </details>
+  </aside>`;
+  
+  document.body.insertAdjacentHTML("beforeend", markup);
+  const details = document.body.querySelector("#controlPanel details");
 
   controlPanel.createControlPanel(details, parameters, onChange);
 };
