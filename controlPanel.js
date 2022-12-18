@@ -60,11 +60,11 @@ const controlPanel = {
     const select = document.createElement("select");
     select.name = `${key}Select`;
 
-    parameter.options.forEach((opt) => {
+    parameter.options.forEach((opt, i) => {
       const option = document.createElement("option");
       option.value = opt;
       option.text = opt;
-      option.selected = parameter.value === opt;
+      option.selected = parameter.value === i;
       select.appendChild(option);
     });
 
