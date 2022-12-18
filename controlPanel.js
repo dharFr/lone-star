@@ -106,7 +106,7 @@ const controlPanel = {
 
   createShareLink: function () {
     const label = document.createElement("label");
-    const text = document.createTextNode("Share: ");
+    const text = document.createTextNode("Copy link: ");
 
     const a = document.createElement("a");
     a.href = "#";
@@ -114,6 +114,15 @@ const controlPanel = {
     label.appendChild(text);
     label.appendChild(document.createElement("br"));
     label.appendChild(a);
+
+    a.addEventListener("click", (e) => {
+      navigator.clipboard.writeText(a.href).then(
+        () => {
+          label.appendChild(document.createTextNode(" (copied ✓)"));
+        },
+        (err) => console.error("copy link failed.", err)
+      );
+    });
 
     this.rootNode.appendChild(label);
     this.rootNode.appendChild(document.createElement("hr"));
@@ -126,12 +135,14 @@ const controlPanel = {
     parameters,
     onChange
   ) {
-    console.log("createControlPanel:", location.hash);
     this.rootNode = rootNode;
     this.options = parameters;
     // this.onChange = onChange
     this.onChange = (key, param) => {
       const serial = this.serialize();
+      if (!this.shareLink) {
+        this.shareLink = this.createShareLink();
+      }
       this.shareLink.textContent = serial;
       location.hash = encodeURIComponent(serial);
       this.shareLink.href = location.href;
@@ -141,6 +152,7 @@ const controlPanel = {
     // Read/Write from the hash doesn't work on p5.js preview env
     // But does work when page is self-hosted
     if (location.hash) {
+      console.log("createControlPanel:", location.hash);
       this.deserialize(decodeURIComponent(location.hash.slice(1)));
     }
     // this.deserialize(decodeURIComponent('50-154-8-2-%23b51a00'))
@@ -169,8 +181,6 @@ const controlPanel = {
         );
       }
     }
-
-    this.shareLink = this.createShareLink();
   },
 };
 
