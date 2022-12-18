@@ -44,3 +44,8 @@ canvas {
 .control-panel a {
   color: inherit;
 }
+.control-panel ul {
+  padding-inline-start: 0.1em;
+  list-style-position: inside;
+  list-style-type: circle;
+}

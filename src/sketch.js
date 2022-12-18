@@ -33,6 +33,17 @@ const parameters = {
   },
 };
 
+const links = {
+  author: {
+    name: "O. Audard",
+    link: "https://olivier.audard.net/",
+  },
+  source: {
+    name: "Github",
+    link: "https://github.com/dharFr/lone-star",
+  },
+};
+
 function getRandomPointOnCircle(x, y, r) {
   const angle = random(TWO_PI);
   return {
@@ -136,7 +147,7 @@ function setup() {
   computeConstants();
   createCanvas(CANVAS_SIZE, CANVAS_SIZE);
 
-  createControlPanel(parameters, () => {
+  createControlPanel(parameters, links, () => {
     loop();
   });
 }

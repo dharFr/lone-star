@@ -1,5 +1,6 @@
 const controlPanel = {
   options: {},
+  links: {},
   shareLink: null,
 
   serialize: function () {
@@ -12,7 +13,7 @@ const controlPanel = {
   deserialize: function (serial) {
     const values = serial.split("-");
     Object.entries(this.options).forEach(([key, option], i) => {
-      // console.log('>>', key, option, '-->', values[i])
+      console.log(`--> ${key}: ${values[i]}`);
       option.value = parseInt(values[i], 10) || values[i];
     });
   },
@@ -46,9 +47,14 @@ const controlPanel = {
     const markup = `<label for="${key}Select">
       ${key}<br>
       <select name="${key}Select">
-        ${parameter.options.map((opt, i) => 
-          `<option value="${opt}" ${parameter.value === i ? "selected" : ""}>${opt}</option>`
-        )}
+        ${parameter.options
+          .map(
+            (opt, i) =>
+              `<option value="${opt}" ${
+                parameter.value === i ? "selected" : ""
+              }>${opt}</option>`
+          )
+          .join("")}
       </select>
     </label>
     <hr>`;
@@ -101,13 +107,32 @@ const controlPanel = {
     return a;
   },
 
+  createLinks: function () {
+    const markup = `<ul>
+      ${Object.entries(this.links)
+        .map(
+          ([label, { name, link }]) =>
+            `<li>
+          <label>${label}:
+            <a title="${label}" href="${link}">${name}</a>
+          </label>
+        </li>`
+        )
+        .join("")}
+    </ul>
+    <hr>`;
+    this.rootNode.insertAdjacentHTML("beforeend", markup);
+  },
+
   createControlPanel: function _createControlPanel(
     rootNode,
     parameters,
+    links,
     onChange
   ) {
     this.rootNode = rootNode;
     this.options = parameters;
+    this.links = links;
     // this.onChange = onChange
     this.onChange = (key, param) => {
       const serial = this.serialize();
@@ -130,6 +155,7 @@ const controlPanel = {
 
     for (let key in this.options) {
       const parameter = this.options[key];
+
       if (typeof parameter === "object") {
         // Arrays are rendered as <select>
         if (parameter.options && Array.isArray(parameter.options)) {
@@ -142,6 +168,13 @@ const controlPanel = {
         // Strings are rendered as input[type='color']
         else if (typeof parameter.value === "string") {
           this.createInputColor(key, parameter);
+        } else {
+          console.warn(
+            "createControlPanel: unknown parameter",
+            key,
+            parameter,
+            typeof parameter
+          );
         }
       } else {
         console.warn(
@@ -152,18 +185,20 @@ const controlPanel = {
         );
       }
     }
+
+    this.createLinks();
   },
 };
 
-p5.prototype.createControlPanel = function (parameters, onChange) {
+p5.prototype.createControlPanel = function (parameters, links, onChange) {
   const markup = `<aside id='controlPanel' class="control-panel">
     <details open>
       <summary>Parameters</summary>
     </details>
   </aside>`;
-  
+
   document.body.insertAdjacentHTML("beforeend", markup);
   const details = document.body.querySelector("#controlPanel details");
 
-  controlPanel.createControlPanel(details, parameters, onChange);
+  controlPanel.createControlPanel(details, parameters, links, onChange);
 };
