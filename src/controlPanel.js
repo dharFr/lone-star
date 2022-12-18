@@ -91,7 +91,7 @@ const controlPanel = {
       <a name="copy-link" title="Copy link" href="#">${this.serialize()}</a>
     </label>
     <hr>`;
-    this.rootNode.insertAdjacentHTML("beforeend", markup);
+    this.rootNode.querySelector('.links').insertAdjacentHTML("beforebegin", markup);
 
     const a = this.rootNode.querySelector(`a[name="copy-link"]`);
 
@@ -108,7 +108,7 @@ const controlPanel = {
   },
 
   createLinks: function () {
-    const markup = `<ul>
+    const markup = `<ul class="links">
       ${Object.entries(this.links)
         .map(
           ([label, { name, link }]) =>
@@ -194,11 +194,13 @@ p5.prototype.createControlPanel = function (parameters, links, onChange) {
   const markup = `<aside id='controlPanel' class="control-panel">
     <details open>
       <summary>Parameters</summary>
+      <section>
+      </section>
     </details>
   </aside>`;
 
   document.body.insertAdjacentHTML("beforeend", markup);
-  const details = document.body.querySelector("#controlPanel details");
+  const section = document.body.querySelector("#controlPanel details section");
 
-  controlPanel.createControlPanel(details, parameters, links, onChange);
+  controlPanel.createControlPanel(section, parameters, links, onChange);
 };
