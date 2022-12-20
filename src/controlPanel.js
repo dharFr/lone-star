@@ -45,7 +45,7 @@ const controlPanel = {
 
   createSelect: function (key, parameter) {
     const markup = `<label for="${key}Select">
-      ${key}<br>
+      ${key} 
       <select name="${key}Select">
         ${parameter.options
           .map(
@@ -85,26 +85,34 @@ const controlPanel = {
     });
   },
 
-  createShareLink: function () {
+  createSaveLinkButton: function () {
     const markup = `<label>
-      Copy link: <br>
-      <a name="copy-link" title="Copy link" href="#">${this.serialize()}</a>
+      Save link  
+      <input type="button" name="save-btn" value="Copy Link" >
+      <output name="save-btn-output"></output>
     </label>
     <hr>`;
-    this.rootNode.querySelector('.links').insertAdjacentHTML("beforebegin", markup);
+    this.rootNode.insertAdjacentHTML("beforeend", markup);
 
-    const a = this.rootNode.querySelector(`a[name="copy-link"]`);
+    const inputSaveBtn = this.rootNode.querySelector("input[name=save-btn]");
+    const outputSaveBtn = this.rootNode.querySelector(
+      "output[name=save-btn-output]"
+    );
 
-    a.addEventListener("click", (e) => {
-      navigator.clipboard.writeText(a.href).then(
+    inputSaveBtn.addEventListener("click", (e) => {
+      const serial = this.serialize();
+      location.hash = encodeURIComponent(serial);
+
+      navigator.clipboard.writeText(location.href).then(
         () => {
-          a.insertAdjacentHTML("afterend", " (copied ✓)");
+          outputSaveBtn.textContent = " (copied ✓)";
+          setTimeout(() => {
+            outputSaveBtn.textContent = "";
+          }, 2000);
         },
         (err) => console.error("copy link failed.", err)
       );
     });
-
-    return a;
   },
 
   createLinks: function () {
@@ -133,17 +141,7 @@ const controlPanel = {
     this.rootNode = rootNode;
     this.options = parameters;
     this.links = links;
-    // this.onChange = onChange
-    this.onChange = (key, param) => {
-      const serial = this.serialize();
-      if (!this.shareLink) {
-        this.shareLink = this.createShareLink();
-      }
-      this.shareLink.textContent = serial;
-      location.hash = encodeURIComponent(serial);
-      this.shareLink.href = location.href;
-      onChange(key, param);
-    };
+    this.onChange = onChange;
 
     // Read/Write from the hash doesn't work on p5.js preview env
     // But does work when page is self-hosted
@@ -185,7 +183,7 @@ const controlPanel = {
         );
       }
     }
-
+    this.createSaveLinkButton();
     this.createLinks();
   },
 };

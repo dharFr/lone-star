@@ -12,7 +12,7 @@ canvas {
 .control-panel {
   background: rgb(165, 165, 165, 0.8);
   color: black;
-  opacity: 0.85;
+  opacity: 0.9;
   border-radius: 5px;
   border: none;
   display: block;
@@ -42,9 +42,18 @@ canvas {
 .control-panel input[type="range"] {
   width: 80%;
 }
+.control-panel select,
+.control-panel input[type="button"] {
+  font-size: 1.2em;
+}
+
 .control-panel a {
   color: inherit;
 }
+.control-panel a.disabled {
+  opacity: 0.5;
+}
+
 .control-panel ul {
   padding-inline-start: 0.1em;
   list-style-position: inside;
@@ -80,11 +89,9 @@ canvas {
 
   .control-panel section li {
     width: 50%;
-
   }
 
   .control-panel hr {
     display: none;
   }
 }
-
