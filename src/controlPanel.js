@@ -85,33 +85,54 @@ const controlPanel = {
     });
   },
 
-  createSaveLinkButton: function () {
+  createCopyLinkButton: function () {
     const markup = `<label>
       Save link  
-      <input type="button" name="save-btn" value="Copy Link" >
-      <output name="save-btn-output"></output>
+      <input type="button" name="copy-link-btn" value="Copy Link" >
+      <output name="copy-link-btn-output"></output>
     </label>
     <hr>`;
     this.rootNode.insertAdjacentHTML("beforeend", markup);
 
-    const inputSaveBtn = this.rootNode.querySelector("input[name=save-btn]");
-    const outputSaveBtn = this.rootNode.querySelector(
-      "output[name=save-btn-output]"
+    const inputCopyLinkBtn = this.rootNode.querySelector(
+      "input[name=copy-link-btn]"
+    );
+    const outputCopyLinkBtn = this.rootNode.querySelector(
+      "output[name=copy-link-btn-output]"
     );
 
-    inputSaveBtn.addEventListener("click", (e) => {
+    inputCopyLinkBtn.addEventListener("click", (e) => {
       const serial = this.serialize();
       location.hash = encodeURIComponent(serial);
 
       navigator.clipboard.writeText(location.href).then(
         () => {
-          outputSaveBtn.textContent = " (copied ✓)";
+          outputCopyLinkBtn.textContent = " (copied ✓)";
           setTimeout(() => {
-            outputSaveBtn.textContent = "";
+            outputCopyLinkBtn.textContent = "";
           }, 2000);
         },
         (err) => console.error("copy link failed.", err)
       );
+    });
+  },
+
+  createSavePictureButton: function () {
+    const markup = `<label>
+      Save Picture  
+      <input type="button" name="save-pict-btn" value="Save Picture" >
+      <output name="save-pict-btn-output"></output>
+    </label>
+    <hr>`;
+    this.rootNode.insertAdjacentHTML("beforeend", markup);
+
+    const inputSavePictureBtn = this.rootNode.querySelector(
+      "input[name=save-pict-btn]"
+    );
+
+    inputSavePictureBtn.addEventListener("click", (e) => {
+      const serial = this.serialize();
+      saveCanvas(`lone-star-${serial}`, "jpg");
     });
   },
 
@@ -183,7 +204,8 @@ const controlPanel = {
         );
       }
     }
-    this.createSaveLinkButton();
+    this.createCopyLinkButton();
+    this.createSavePictureButton();
     this.createLinks();
   },
 };
