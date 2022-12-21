@@ -143,14 +143,36 @@ function computeConstants() {
   Y_ORIGIN = CANVAS_SIZE / 2;
 }
 
+function watermark(serial, url) {
+  textSize(max(9, CANVAS_SIZE * 0.02)); // 700 * 0.02 = 14
+  textAlign(RIGHT);
+  stroke(127);
+  strokeWeight(1);
+  fill(parameters.lineColor.value);
+
+  text(
+    `Lone Star [${serial}]
+    by ${links.author.name}
+    ${url}`,
+    CANVAS_SIZE - 20,
+    CANVAS_SIZE - 60
+  );
+}
+
 function setup() {
   computeConstants();
   createCanvas(CANVAS_SIZE, CANVAS_SIZE);
 
-  createControlPanel(parameters, links, () => {
-    loop();
-  });
+  createControlPanel(
+    parameters,
+    links,
+    () => {
+      loop();
+    },
+    watermark
+  );
 }
+
 function windowResized() {
   computeConstants();
   resizeCanvas(CANVAS_SIZE, CANVAS_SIZE);
@@ -161,9 +183,11 @@ function draw() {
   noLoop();
   randomSeed(parameters.seed.value);
   background(0);
-  noFill();
+
+  // this.watermark();
   currentColor = color(parameters.lineColor.value);
   stroke(currentColor);
+  noFill();
   // circle(X_ORIGIN, Y_ORIGIN, _RADIUS*2)
 
   const colorMode = parameters.colorMode.options[parameters.colorMode.value];

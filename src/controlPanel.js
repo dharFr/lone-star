@@ -132,7 +132,15 @@ const controlPanel = {
 
     inputSavePictureBtn.addEventListener("click", (e) => {
       const serial = this.serialize();
+      location.hash = encodeURIComponent(serial);
+
+      // Watermark
+      this.watermark(serial, location.href);
+
+      // Save picture
       saveCanvas(`lone-star-${serial}`, "jpg");
+
+      loop();
     });
   },
 
@@ -157,12 +165,14 @@ const controlPanel = {
     rootNode,
     parameters,
     links,
-    onChange
+    onChange,
+    watermarkFunc
   ) {
     this.rootNode = rootNode;
     this.options = parameters;
     this.links = links;
     this.onChange = onChange;
+    this.watermark = watermarkFunc;
 
     // Read/Write from the hash doesn't work on p5.js preview env
     // But does work when page is self-hosted
@@ -210,7 +220,12 @@ const controlPanel = {
   },
 };
 
-p5.prototype.createControlPanel = function (parameters, links, onChange) {
+p5.prototype.createControlPanel = function (
+  parameters,
+  links,
+  onChange,
+  watermarkFunc
+) {
   const markup = `<aside id='controlPanel' class="control-panel">
     <details open>
       <summary>Parameters</summary>
@@ -222,5 +237,11 @@ p5.prototype.createControlPanel = function (parameters, links, onChange) {
   document.body.insertAdjacentHTML("beforeend", markup);
   const section = document.body.querySelector("#controlPanel details section");
 
-  controlPanel.createControlPanel(section, parameters, links, onChange);
+  controlPanel.createControlPanel(
+    section,
+    parameters,
+    links,
+    onChange,
+    watermarkFunc
+  );
 };
