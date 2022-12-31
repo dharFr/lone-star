@@ -35,7 +35,7 @@ const parameters = {
 
 const links = {
   author: {
-    name: "O. Audard",
+    name: "@oad",
     link: "https://olivier.audard.net/",
   },
   source: {

@@ -39,9 +39,15 @@ canvas {
   font-weight: bold;
   text-transform: capitalize;
 }
+
+.control-panel .links label a {
+  text-transform: none;
+}
+
 .control-panel input[type="range"] {
   width: 80%;
 }
+
 .control-panel select,
 .control-panel input[type="button"] {
   font-size: 1.2em;
